@@ -33,74 +33,55 @@ switch (action) {
     console.log("I'm sorry, I don't understand. \n Would you like to: \n concert-this to find concerts of bands around your area.\n'spotify-this-song' to find information about a song.\n'movie-this' to find information about a movie.")
 }
 
-
-// spotify
-//   .search({ type: 'track', query: 'All the Small Things' })
-//   .then(function(response) {
-//     console.log(response);
-//   })
-//   .catch(function(err) {
-//     console.log(err);
-//   });
-  
 //   node liri.js concert-this <artist/band name here>
+      
+function concert() {
+  var artist = '';
+    artist = value;
+    console.log(`--------------------`);
+    console.log(`Here's what I found for concerts!`);
+    request("https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp", function (response, body) {
+      
+      console.log(`Venue: ${JSON.parse(body).venue}`);
+    })
+  }
+  
+  
+  // Name of the venue
+  
+  
+  // Venue location
+  
+  
+  // Date of the Event (use moment to format this as "MM/DD/YYYY")
+
+  // node liri.js spotify-this-song '<song name here>'
+
+function song() {
+  var song = '';
+  if (input === undefined) {
+    song = 'The Sign Ace of Base'
+  } else {
+    song = input;
+  }
+  console.log(`--------------------`);
+  console.log(`Here's what I found about the song!`)
+  spotify.search({ type: 'track', query: song }, function (error, data) {
+    if (!error) {
+      console.log(`Song: ${data.tracks.items[0].name}`);
+      console.log(`Artist(s): ${data.tracks.items[0].artists[0].name}`);
+      console.log(`Preview Link: ${data.tracks.items[0].external_urls.spotify}`);
+      console.log(`Album: ${data.tracks.items[0].album.name}`);
+      var songData = `\nUsed spotify-this-song to find: \nArtist: ${data.tracks.items[0].artists[0].name} \nSong Name: ${data.tracks.items[0].name} \nSpotify Preview Link: ${data.tracks.items[0].external_urls.spotify} \nAlbum: ${data.tracks.items[0].album.name}\n--------------------`
+      fs.appendFile('log.txt', songData, function (error) {
+        if (error) throw error;
+      });
+    }
+  });
+}
 
 
-// This will search the Bands in Town Artist Events API ("https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp") for an artist and render the following information about each event to the terminal:
 
-
-// Name of the venue
-
-
-// Venue location
-
-
-// Date of the Event (use moment to format this as "MM/DD/YYYY")
-
-
-
-
-
-
-// node liri.js spotify-this-song '<song name here>'
-
-
-// This will show the following information about the song in your terminal/bash window
-
-
-// Artist(s)
-
-
-// The song's name
-
-
-// A preview link of the song from Spotify
-
-
-// The album that the song is from
-
-
-
-
-// If no song is provided then your program will default to "The Sign" by Ace of Base.
-
-
-// You will utilize the node-spotify-api package in order to retrieve song information from the Spotify API.
-
-
-// The Spotify API requires you sign up as a developer to generate the necessary credentials. You can follow these steps in order to generate a client id and client secret:
-
-
-// Step One: Visit https://developer.spotify.com/my-applications/#!/
-
-
-// Step Two: Either login to your existing Spotify account or create a new one (a free account is fine) and log in.
-
-
-// Step Three: Once logged in, navigate to https://developer.spotify.com/my-applications/#!/applications/create to register a new application to be used with the Spotify API. You can fill in whatever you'd like for these fields. When finished, click the "complete" button.
-
-
-// Step Four: On the next screen, scroll down to where you see your client id and client secret. Copy these values down somewhere, you'll need them to use the Spotify API and the node-spotify-api package.
 
 
 // node liri.js movie-this '<movie name here>'
@@ -123,7 +104,7 @@ function movie() {
       console.log(`Movie Title: ${JSON.parse(body).Title}`);
       console.log(`Release Year: ${JSON.parse(body).Year}`);
       
-      //To fix for movies with weird ratings...
+      //Fixing ratings
       var imdb = "";
       var rotten = "";
 			if (JSON.parse(body).Ratings[0]) {
@@ -152,31 +133,6 @@ function movie() {
     }
   });
 }
-
-// This will output the following information to your terminal/bash window:
-//   * Title of the movie.
-//   * Year the movie came out.
-//   * IMDB Rating of the movie.
-//   * Rotten Tomatoes Rating of the movie.
-//   * Country where the movie was produced.
-//   * Language of the movie.
-//   * Plot of the movie.
-//   * Actors in the movie.
-
-
-// If the user doesn't type a movie in, the program will output data for the movie 'Mr. Nobody.'
-
-
-// If you haven't watched "Mr. Nobody," then you should: http://www.imdb.com/title/tt0485947/
-
-
-// It's on Netflix!
-
-
-
-
-// You'll use the axios package to retrieve data from the OMDB API. Like all of the in-class activities, the OMDB API requires an API key. You may use trilogy.
-
 
 
 
