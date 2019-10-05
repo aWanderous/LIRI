@@ -85,8 +85,8 @@ function song() {
       console.log(`Artist(s): ${data.tracks.items[0].artists[0].name}`);
       console.log(`Preview Link: ${data.tracks.items[0].external_urls.spotify}`);
       console.log(`Album: ${data.tracks.items[0].album.name}`);
-      var songData =`\n-------- Liri spotify-this-song -------- \nArtist: ${data.tracks.items[0].artists[0].name} \nSong Name: ${data.tracks.items[0].name} \nSpotify Preview Link: ${data.tracks.items[0].external_urls.spotify} \nAlbum: ${data.tracks.items[0].album.name} \n`
-    
+      var songData = `\n-------- Liri spotify-this-song -------- \nArtist: ${data.tracks.items[0].artists[0].name} \nSong Name: ${data.tracks.items[0].name} \nSpotify Preview Link: ${data.tracks.items[0].external_urls.spotify} \nAlbum: ${data.tracks.items[0].album.name} \n`
+
       fs.appendFile('log.txt', songData, function (error) {
         if (error) throw error;
       });
@@ -158,7 +158,11 @@ function doIt() {
       var dataArray = data.split(',');
       action = dataArray[0];
       value = dataArray.slice(1).join(" ");
-      console.log("Reading text...")
+      console.log("Reading text...");
+
+      fs.appendFile('log.txt', '\n-------- reading random.txt --------', function (error) {
+        if (error) throw error;
+      });
 
       switch (action) {
 
