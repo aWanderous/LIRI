@@ -3,97 +3,95 @@ require("dotenv").config();
 var request = require("request");
 var fs = require("fs");
 
+var moment = require('moment')
+
 // Spotify
 var keys = require("./keys.js");
-var Spotify = require('node-spotify-api');
+var Spotify = require("node-spotify-api");
 var spotify = new Spotify(keys.spotify);
 
 var action = process.argv[2];
 var value = process.argv[3];
 
 switch (action) {
-  //concert-this
-  case 'concert-this':
+
+  case "concert-this":
     concert();
     break;
-  //Spotify Case
-  case 'spotify-this-song':
+
+  case "spotify-this-song":
     song();
     break;
-  //Movie Case
-  case 'movie-this':
+
+  case "movie-this":
     movie();
     break;
-  //Do What It Says Case
-  case 'do-what-it-says':
+
+  case "do-what-it-says":
     followDirections();
     break;
-  //Default
+
   default:
-    console.log("I'm sorry, I don't understand. \n Would you like to: \n concert-this to find concerts of bands around your area.\n'spotify-this-song' to find information about a song.\n'movie-this' to find information about a movie.")
+    console.log("--------------------");
+    console.log("I'm sorry, I don't understand. \n Would you like to: \n 'concert-this' to find concerts of bands around your area.\n'spotify-this-song' to find information about a song.\n'movie-this' to find information about a movie.")
 }
 
 //   node liri.js concert-this <artist/band name here>
-      
 function concert() {
-  var artist = '';
+  var artist = "";
     artist = value;
-    console.log(`--------------------`);
-    console.log(`Here's what I found for concerts!`);
-    request("https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp", function (response, body) {
+    console.log("--------------------");
+    console.log("Here's what I found for concerts!");
+    request("https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp", function (error, response, body) {
       
-      console.log(`Venue: ${JSON.parse(body).venue}`);
-    })
-  }
-  
-  
-  // Name of the venue
-  
-  
-  // Venue location
-  
-  
-  // Date of the Event (use moment to format this as "MM/DD/YYYY")
+      if (!error && response.statusCode === 200) {
 
-  // node liri.js spotify-this-song '<song name here>'
+        if (JSON.parse(body).length > 0) {
+          for (i = 0; i < 1; i++) {
+    
+          console.log(`Artist: ${JSON.parse(body)[i].lineup[0]}`)
+          console.log(`Venue: ${JSON.parse(body)[i].venue.name}`)
+          console.log(`Venue City: ${JSON.parse(body)[i].venue.city}, ${JSON.parse(body)[i].venue.country}`)
+          console.log(`Date and Time: ${moment(JSON.parse(body)[i].datetime).format("MM/DD/YYYY hh:00 A")}`)
 
+          };
+        } else {
+          console.log('Band or concert not found!');
+        };
+      };
+    });
+  };
+
+// node liri.js spotify-this-song '<song name here>'
 function song() {
-  var song = '';
-  if (input === undefined) {
-    song = 'The Sign Ace of Base'
+  var song = "";
+  if (value === undefined) {
+    song = "The Sign Ace of Base"
   } else {
-    song = input;
+    song = value;
   }
-  console.log(`--------------------`);
-  console.log(`Here's what I found about the song!`)
-  spotify.search({ type: 'track', query: song }, function (error, data) {
+  console.log("--------------------");
+  console.log("Here's what I found about the song!")
+  spotify.search({ type: "track", query: song }, function (error, data) {
     if (!error) {
       console.log(`Song: ${data.tracks.items[0].name}`);
       console.log(`Artist(s): ${data.tracks.items[0].artists[0].name}`);
       console.log(`Preview Link: ${data.tracks.items[0].external_urls.spotify}`);
       console.log(`Album: ${data.tracks.items[0].album.name}`);
       var songData = `\nUsed spotify-this-song to find: \nArtist: ${data.tracks.items[0].artists[0].name} \nSong Name: ${data.tracks.items[0].name} \nSpotify Preview Link: ${data.tracks.items[0].external_urls.spotify} \nAlbum: ${data.tracks.items[0].album.name}\n--------------------`
-      fs.appendFile('log.txt', songData, function (error) {
-        if (error) throw error;
-      });
     }
   });
 }
 
-
-
-
-
 // node liri.js movie-this '<movie name here>'
-
 function movie() {
-  var movie = '';
+  var movie = "";
   if (value === undefined) {
-    console.log(`--------------------`);
-    console.log(`If you haven't watched "Mr. Nobody," then you should!`);
-    console.log(`It's on Netflix!`);
-    console.log(`--------------------`);
-    movie = 'Mr. Nobody'
+    console.log("--------------------");
+    console.log("If you haven't watched 'Mr. Nobody,' then you should!");
+    console.log("It's on Netflix!");
+    console.log("--------------------");
+    movie = "Mr. Nobody"
   } else {
     movie = value;
     console.log(`--------------------`);
@@ -129,7 +127,7 @@ function movie() {
       
      
     }else{
-      console.log(`Something went wrong!`)
+      console.log("Something went wrong!")
     }
   });
 }
