@@ -11,7 +11,7 @@ var Spotify = require("node-spotify-api");
 var spotify = new Spotify(keys.spotify);
 
 var action = process.argv[2];
-var value = process.argv[3];
+var value = process.argv.slice(3).join(" ");
 
 switch (action) {
 
@@ -39,28 +39,28 @@ switch (action) {
 //   node liri.js concert-this <artist/band name here>
 function concert() {
   var artist = "";
-    artist = value;
-    console.log("--------------------");
-    console.log("Here's what I found for concerts!");
-    request("https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp", function (error, response, body) {
-      
-      if (!error && response.statusCode === 200) {
+  artist = value;
+  console.log("--------------------");
+  console.log("Here's what I found for concerts!");
+  request("https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp", function (error, response, body) {
 
-        if (JSON.parse(body).length > 0) {
-          for (i = 0; i < 1; i++) {
-    
+    if (!error && response.statusCode === 200) {
+
+      if (JSON.parse(body).length > 0) {
+        for (i = 0; i < 1; i++) {
+
           console.log(`Artist: ${JSON.parse(body)[i].lineup[0]}`)
           console.log(`Venue: ${JSON.parse(body)[i].venue.name}`)
           console.log(`Venue City: ${JSON.parse(body)[i].venue.city}, ${JSON.parse(body)[i].venue.country}`)
           console.log(`Date and Time: ${moment(JSON.parse(body)[i].datetime).format("MM/DD/YYYY hh:00 A")}`)
 
-          };
-        } else {
-          console.log('Band or concert not found!');
         };
+      } else {
+        console.log('Band or concert not found!');
       };
-    });
-  };
+    };
+  });
+};
 
 // node liri.js spotify-this-song '<song name here>'
 function song() {
@@ -72,7 +72,10 @@ function song() {
   }
   console.log("--------------------");
   console.log("Here's what I found about the song!")
-  spotify.search({ type: "track", query: song }, function (error, data) {
+  spotify.search({
+    type: "track",
+    query: song
+  }, function (error, data) {
     if (!error) {
       console.log(`Song: ${data.tracks.items[0].name}`);
       console.log(`Artist(s): ${data.tracks.items[0].artists[0].name}`);
@@ -101,19 +104,19 @@ function movie() {
     if (!error && response.statusCode === 200) {
       console.log(`Movie Title: ${JSON.parse(body).Title}`);
       console.log(`Release Year: ${JSON.parse(body).Year}`);
-      
+
       //Fixing ratings
       var imdb = "";
       var rotten = "";
-			if (JSON.parse(body).Ratings[0]) {
-				imdb = JSON.parse(body).Ratings[0].Value
-			} else {
-				imdb = JSON.parse(body).imdbRating
-			};
-			if (JSON.parse(body).Ratings[1]) {
-				rotten = JSON.parse(body).Ratings[1].Value
-			} else {
-				rotten = 'No rating for this movie.'
+      if (JSON.parse(body).Ratings[0]) {
+        imdb = JSON.parse(body).Ratings[0].Value
+      } else {
+        imdb = JSON.parse(body).imdbRating
+      };
+      if (JSON.parse(body).Ratings[1]) {
+        rotten = JSON.parse(body).Ratings[1].Value
+      } else {
+        rotten = 'No rating for this movie.'
       }
       console.log(`IMDB Rating: ${imdb}`);
       console.log(`Rotten Tomatoes Rating: ${rotten}`)
@@ -123,10 +126,10 @@ function movie() {
       console.log(`Actor(s): ${JSON.parse(body).Actors}`);
       console.log(`--------------------`);
       var movieData = `\nUsed movie-this to find: \nTitle: ${JSON.parse(body).Title} \nYear: ${JSON.parse(body).Year} \nIMDB Rating: ${imdb} \nRotten Tomatoes Rating: ${rotten} \nCountry:${JSON.parse(body).Country} \nLanguage: ${JSON.parse(body).Language} \nPlot: ${JSON.parse(body).Plot} \nActor(s): ${JSON.parse(body).Actors} \n--------------------`
-    
-      
-     
-    }else{
+
+
+
+    } else {
       console.log("Something went wrong!")
     }
   });
