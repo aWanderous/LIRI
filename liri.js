@@ -53,9 +53,11 @@ function concert() {
           console.log(`Venue: ${JSON.parse(body)[i].venue.name}`)
           console.log(`Venue City: ${JSON.parse(body)[i].venue.city}, ${JSON.parse(body)[i].venue.country}`)
           console.log(`Date and Time: ${moment(JSON.parse(body)[i].datetime).format("MM/DD/YYYY hh:mm")}`)
-          var concertData = `\nLiri concert-this: Artist: ${JSON.parse(body)[i].lineup[0]} \nVenue: ${JSON.parse(body)[i].venue.name} \nVenue City: ${JSON.parse(body)[i].venue.city}, ${JSON.parse(body)[i].venue.country} \nDate and Time: ${moment(JSON.parse(body)[i].datetime).format("MM/DD/YYYY hh:mm")}`
+          var concertData = `\n-------- Liri concert-this -------- \nArtist: ${JSON.parse(body)[i].lineup[0]} \nVenue: ${JSON.parse(body)[i].venue.name} \nVenue City: ${JSON.parse(body)[i].venue.city}, ${JSON.parse(body)[i].venue.country} \nDate and Time: ${moment(JSON.parse(body)[i].datetime).format("MM/DD/YYYY hh:mm")} \n`
 
-          
+          fs.appendFile('log.txt', concertData, function (error) {
+            if (error) throw error;
+          });
         };
       } else {
         console.log('Band or concert not found!');
@@ -83,7 +85,11 @@ function song() {
       console.log(`Artist(s): ${data.tracks.items[0].artists[0].name}`);
       console.log(`Preview Link: ${data.tracks.items[0].external_urls.spotify}`);
       console.log(`Album: ${data.tracks.items[0].album.name}`);
-      var songData = `\nUsed spotify-this-song to find: \nArtist: ${data.tracks.items[0].artists[0].name} \nSong Name: ${data.tracks.items[0].name} \nSpotify Preview Link: ${data.tracks.items[0].external_urls.spotify} \nAlbum: ${data.tracks.items[0].album.name}\n--------------------`
+      var songData =`\n-------- Liri spotify-this-song -------- \nArtist: ${data.tracks.items[0].artists[0].name} \nSong Name: ${data.tracks.items[0].name} \nSpotify Preview Link: ${data.tracks.items[0].external_urls.spotify} \nAlbum: ${data.tracks.items[0].album.name} \n`
+    
+      fs.appendFile('log.txt', songData, function (error) {
+        if (error) throw error;
+      });
     }
   });
 }
@@ -103,7 +109,7 @@ function movie() {
     console.log(`Here's what I found about the movie!`);
   }
   request("http://www.omdbapi.com/?t=" + movie + "&y=&plot=short&apikey=40e9cece", function (error, response, body) {
-    if (!error && response.statusCode === 200) {
+    if (!error) {
       console.log(`Movie Title: ${JSON.parse(body).Title}`);
       console.log(`Release Year: ${JSON.parse(body).Year}`);
 
@@ -127,9 +133,11 @@ function movie() {
       console.log(`Plot: ${JSON.parse(body).Plot}`);
       console.log(`Actor(s): ${JSON.parse(body).Actors}`);
       console.log(`--------------------`);
-      var movieData = `\nUsed movie-this to find: \nTitle: ${JSON.parse(body).Title} \nYear: ${JSON.parse(body).Year} \nIMDB Rating: ${imdb} \nRotten Tomatoes Rating: ${rotten} \nCountry:${JSON.parse(body).Country} \nLanguage: ${JSON.parse(body).Language} \nPlot: ${JSON.parse(body).Plot} \nActor(s): ${JSON.parse(body).Actors}`
+      var movieData = `\n-------- Liri movie-this -------- \nTitle: ${JSON.parse(body).Title} \nYear: ${JSON.parse(body).Year} \nIMDB Rating: ${imdb} \nRotten Tomatoes Rating: ${rotten} \nCountry:${JSON.parse(body).Country} \nLanguage: ${JSON.parse(body).Language} \nPlot: ${JSON.parse(body).Plot} \nActor(s): ${JSON.parse(body).Actors} \n`
 
-
+      fs.appendFile('log.txt', movieData, function (error) {
+        if (error) throw error;
+      });
 
     } else {
       console.log("Something went wrong!")
