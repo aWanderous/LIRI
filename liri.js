@@ -5,7 +5,7 @@ var fs = require("fs");
 
 var moment = require('moment')
 
-// Spotify
+// Spotify gets
 var keys = require("./keys.js");
 var Spotify = require("node-spotify-api");
 var spotify = new Spotify(keys.spotify);
@@ -28,7 +28,7 @@ switch (action) {
     break;
 
   case "do-what-it-says":
-    followDirections();
+    doIt();
     break;
 
   default:
@@ -52,8 +52,10 @@ function concert() {
           console.log(`Artist: ${JSON.parse(body)[i].lineup[0]}`)
           console.log(`Venue: ${JSON.parse(body)[i].venue.name}`)
           console.log(`Venue City: ${JSON.parse(body)[i].venue.city}, ${JSON.parse(body)[i].venue.country}`)
-          console.log(`Date and Time: ${moment(JSON.parse(body)[i].datetime).format("MM/DD/YYYY hh:00 A")}`)
+          console.log(`Date and Time: ${moment(JSON.parse(body)[i].datetime).format("MM/DD/YYYY hh:mm")}`)
+          var concertData = `\nLiri concert-this: Artist: ${JSON.parse(body)[i].lineup[0]} \nVenue: ${JSON.parse(body)[i].venue.name} \nVenue City: ${JSON.parse(body)[i].venue.city}, ${JSON.parse(body)[i].venue.country} \nDate and Time: ${moment(JSON.parse(body)[i].datetime).format("MM/DD/YYYY hh:mm")}`
 
+          
         };
       } else {
         console.log('Band or concert not found!');
@@ -125,7 +127,7 @@ function movie() {
       console.log(`Plot: ${JSON.parse(body).Plot}`);
       console.log(`Actor(s): ${JSON.parse(body).Actors}`);
       console.log(`--------------------`);
-      var movieData = `\nUsed movie-this to find: \nTitle: ${JSON.parse(body).Title} \nYear: ${JSON.parse(body).Year} \nIMDB Rating: ${imdb} \nRotten Tomatoes Rating: ${rotten} \nCountry:${JSON.parse(body).Country} \nLanguage: ${JSON.parse(body).Language} \nPlot: ${JSON.parse(body).Plot} \nActor(s): ${JSON.parse(body).Actors} \n--------------------`
+      var movieData = `\nUsed movie-this to find: \nTitle: ${JSON.parse(body).Title} \nYear: ${JSON.parse(body).Year} \nIMDB Rating: ${imdb} \nRotten Tomatoes Rating: ${rotten} \nCountry:${JSON.parse(body).Country} \nLanguage: ${JSON.parse(body).Language} \nPlot: ${JSON.parse(body).Plot} \nActor(s): ${JSON.parse(body).Actors}`
 
 
 
@@ -138,12 +140,36 @@ function movie() {
 
 
 // node liri.js do-what-it-says
+function doIt() {
+  fs.readFile('random.txt', 'utf8', function (error, data) {
 
+    if (error) {
+      return console.log(error);
+    } else {
 
-// Using the fs Node package, LIRI will take the text inside of random.txt and then use it to call one of LIRI's commands.
+      var dataArray = data.split(',');
+      action = dataArray[0];
+      value = dataArray.slice(1).join(" ");
+      console.log("Reading text...")
 
+      switch (action) {
 
-// It should run spotify-this-song for "I Want it That Way," as follows the text in random.txt.
+        case "concert-this":
+          concert();
+          break;
 
+        case "spotify-this-song":
+          song();
+          break;
 
-// Edit the text in random.txt to test out the feature for movie-this and concert-this.
+        case "movie-this":
+          movie();
+          break;
+
+        default:
+          console.log("--------------------");
+          console.log("Not found.")
+      }
+    }
+  })
+}
